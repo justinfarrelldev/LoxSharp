@@ -5,6 +5,7 @@ namespace LoxSharp
 {
     class Program
     {
+        private static bool hadError { get; set; } = false;
         static void Main(string[] args)
         {
             if (args.Length > 1)
@@ -26,6 +27,8 @@ namespace LoxSharp
         {
             string[] file = System.IO.File.ReadAllLines(@path);
             run(file);
+
+            if (hadError) Environment.Exit(65);
         }
 
         private static void runPrompt()
@@ -36,6 +39,9 @@ namespace LoxSharp
             {
                 Console.Write("> ");
                 userInput = Console.ReadLine();
+                if (userInput == null) break;
+                run(line);
+                hadError = false;
             }
         }
 
@@ -46,6 +52,17 @@ namespace LoxSharp
             {
                 Console.WriteLine(s);
             }
+        }
+
+        private static void error(int line, string message)
+        {
+            report(line, "", message);
+        }
+
+        private static void report(int line, string where, string message)
+        {
+            Console.WriteLine($"[line {line}] Error{where}: {message}");
+            hadError = true;
         }
     }
 }

@@ -40,7 +40,7 @@ namespace LoxSharp
                 Console.Write("> ");
                 userInput = Console.ReadLine();
                 if (userInput == null) break;
-                run(line);
+                run(new string[] { userInput });
                 hadError = false;
             }
         }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Collections.Generic;
 
 namespace LoxSharp
 {
@@ -25,7 +26,7 @@ namespace LoxSharp
 
         private static void runFile(string path)
         {
-            string[] file = System.IO.File.ReadAllLines(@path);
+            string file = System.IO.File.ReadAllText(@path);
             run(file);
 
             if (hadError) Environment.Exit(65);
@@ -40,21 +41,23 @@ namespace LoxSharp
                 Console.Write("> ");
                 userInput = Console.ReadLine();
                 if (userInput == null) break;
-                run(new string[] { userInput });
+                run(userInput);
                 hadError = false;
             }
         }
 
-        private static void run(string[] source)
+        private static void run(string source)
         {
+            Scanner scanner = new LoxSharp.Scanner(source);
+            List<Token> tokens = scanner.scanTokens();
             // For now, we're printing the tokens 
-            foreach (string s in source)
+            foreach (Token t in tokens)
             {
-                Console.WriteLine(s);
+                Console.WriteLine(t.toString());
             }
         }
 
-        private static void error(int line, string message)
+        public static void error(int line, string message)
         {
             report(line, "", message);
         }

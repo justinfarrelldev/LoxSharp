@@ -1,1 +1,4 @@
 *.code-workspace
+
+bin
+obj

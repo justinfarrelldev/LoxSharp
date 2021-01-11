@@ -77,6 +77,21 @@ namespace LoxSharp
                         // A comment goes until the end of the line.
                         while (peek() != '\n' && !isAtEnd()) advance();
                     }
+                    else if (match('*'))
+                    {
+                        // Block comment
+                        while (!isAtEnd())
+                        {
+                            if (match('*'))
+                            {
+                                if (match('/'))
+                                {
+                                    break;
+                                }
+                            }
+                            advance();
+                        }
+                    }
                     else
                     {
                         addToken(TokenType.SLASH);
@@ -144,7 +159,7 @@ namespace LoxSharp
             advance();
 
             // Trim the surrounding quotes.
-            string value = source.Substring(start + 1, current - 2);
+            string value = source.Substring(start + 1, current - start - 2);
             addToken(TokenType.STRING, value);
         }
 

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Collections.Generic;
+using ASTGenerator;
 
 namespace LoxSharp
 {
@@ -9,10 +10,15 @@ namespace LoxSharp
         private static bool hadError { get; set; } = false;
         static void Main(string[] args)
         {
-            if (args.Length > 1)
+            if (args.Length > 2)
             {
-                Console.WriteLine("Usage: jlox [script]");
+                Console.WriteLine("Usage: jlox [script] [DEBUG REMOVE ME AST PATH]");
                 Environment.Exit(64);
+            }
+            else if (args.Length == 2)
+            {
+                ASTGenerator.GenerateAST.GenerateASTFromPath(args[1]);
+                runFile(args[0]);
             }
             else if (args.Length == 1)
             {

@@ -1,5 +1,6 @@
 using LoxSharp;
-abstract class Expr {
+namespace Expr {
+	abstract class Expr {
 		class Binary : Expr {
 			public Binary(Expr left, Token op, Expr right) {
 				this.left = left;
@@ -34,4 +35,5 @@ abstract class Expr {
 			Token op;
 			Expr right;
 		}
+	}
 }

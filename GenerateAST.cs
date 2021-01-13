@@ -21,7 +21,8 @@ namespace ASTGenerator
         {
             string path = $"{outputDir}/{baseName}.cs";
             fileText = "using LoxSharp;\n" +
-                $"abstract class {baseName} {{";
+                $"namespace {baseName} {{\n" +
+                $"\tabstract class {baseName} {{";
 
             // AST classes
             foreach (string type in types)
@@ -32,7 +33,7 @@ namespace ASTGenerator
             }
 
             fileText = fileText +
-                "\n}" + Environment.NewLine;
+                "\n\t}\n}" + Environment.NewLine;
 
             File.WriteAllText(outputDir, fileText);
         }

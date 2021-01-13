@@ -1,5 +1,0 @@
-namespace ExprNamespace
-{
-	class Expr	{
-	}
-}

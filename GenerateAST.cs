@@ -48,7 +48,7 @@ namespace ASTGenerator
             foreach (string type in types)
             {
                 string typeName = type.Split(":")[0].Trim();
-                fileText += $"\t\t\tR visit{typeName + baseName}({typeName} {baseName.ToLower()});\n";
+                fileText += $"\t\t\tabstract R visit{typeName + baseName}({typeName} {baseName.ToLower()});\n";
             }
             fileText += "\t\t}";
         }
@@ -72,7 +72,7 @@ namespace ASTGenerator
             fileText += "\n\t\t\t}\n";
             foreach (string field in fields)
             {
-                fileText += $"\t\t\t{field};\n";
+                fileText += $"\t\t\tpublic {field};\n";
             }
 
             fileText += "\t\t\tpublic override R accept<R>(Visitor<R> visitor) {\n";

@@ -3,6 +3,10 @@ using Expr;
 
 class AstPrinter : Expr.Expr.Visitor<string>
 {
+    public string print(Expr.Expr expr)
+    {
+        return expr.accept(this);
+    }
     public string visitBinaryExpr(Expr.Expr.Binary expr)
     {
         return parenthesize(expr.op.lexeme, new Expr.Expr[] { expr.left, expr.right });
@@ -35,5 +39,19 @@ class AstPrinter : Expr.Expr.Visitor<string>
         returned += ")";
 
         return returned;
+    }
+
+    public static void Test()
+    {
+        Expr.Expr expression = new Expr.Expr.Binary(
+            new Expr.Expr.Unary(
+                new LoxSharp.Token(LoxSharp.TokenType.MINUS, "-", null, 1),
+                new Expr.Expr.Literal(123)
+            ),
+            new LoxSharp.Token(LoxSharp.TokenType.STAR, "*", null, 1),
+            new Expr.Expr.Grouping(new Expr.Expr.Literal(45.67))
+        );
+
+        System.Console.WriteLine(new AstPrinter().print(expression));
     }
 }

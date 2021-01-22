@@ -23,6 +23,7 @@ namespace LoxSharp
             else if (args.Length == 1)
             {
                 runFile(args[0]);
+                AstPrinter.Test();
             }
             else
             {

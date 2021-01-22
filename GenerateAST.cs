@@ -21,7 +21,7 @@ namespace ASTGenerator
         {
             string path = $"{outputDir}/{baseName}.cs";
             fileText = "using LoxSharp;\n" +
-                $"namespace {baseName} {{\n" +
+                $"namespace {baseName}Namespace {{\n" +
                 $"\tabstract class {baseName} {{";
 
             defineVisitor(baseName, types);

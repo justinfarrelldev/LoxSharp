@@ -1,38 +1,38 @@
 
-using Expr;
+using ExprNamespace;
 
-class AstPrinter : Expr.Expr.Visitor<string>
+class AstPrinter : Expr.Visitor<string>
 {
-    public string print(Expr.Expr expr)
+    public string print(Expr expr)
     {
         return expr.accept(this);
     }
-    public string visitBinaryExpr(Expr.Expr.Binary expr)
+    public string visitBinaryExpr(Expr.Binary expr)
     {
-        return parenthesize(expr.op.lexeme, new Expr.Expr[] { expr.left, expr.right });
+        return parenthesize(expr.op.lexeme, new Expr[] { expr.left, expr.right });
     }
 
-    public string visitGroupingExpr(Expr.Expr.Grouping expr)
+    public string visitGroupingExpr(Expr.Grouping expr)
     {
-        return parenthesize("group", new Expr.Expr[] { expr.expression });
+        return parenthesize("group", new Expr[] { expr.expression });
     }
 
-    public string visitLiteralExpr(Expr.Expr.Literal expr)
+    public string visitLiteralExpr(Expr.Literal expr)
     {
         if (expr.value == null) return "nil";
         return expr.value.ToString();
     }
 
-    public string visitUnaryExpr(Expr.Expr.Unary expr)
+    public string visitUnaryExpr(Expr.Unary expr)
     {
-        return parenthesize(expr.op.lexeme, new Expr.Expr[] { expr.right });
+        return parenthesize(expr.op.lexeme, new Expr[] { expr.right });
     }
 
-    private string parenthesize(string name, Expr.Expr[] exprs)
+    private string parenthesize(string name, Expr[] exprs)
     {
         string returned = $"({name}";
 
-        foreach (Expr.Expr expr in exprs)
+        foreach (Expr expr in exprs)
         {
             returned += $" {expr.accept(this)}";
         }
@@ -43,13 +43,13 @@ class AstPrinter : Expr.Expr.Visitor<string>
 
     public static void Test()
     {
-        Expr.Expr expression = new Expr.Expr.Binary(
-            new Expr.Expr.Unary(
+        Expr expression = new Expr.Binary(
+            new Expr.Unary(
                 new LoxSharp.Token(LoxSharp.TokenType.MINUS, "-", null, 1),
-                new Expr.Expr.Literal(123)
+                new Expr.Literal(123)
             ),
             new LoxSharp.Token(LoxSharp.TokenType.STAR, "*", null, 1),
-            new Expr.Expr.Grouping(new Expr.Expr.Literal(45.67))
+            new Expr.Grouping(new Expr.Literal(45.67))
         );
 
         System.Console.WriteLine(new AstPrinter().print(expression));

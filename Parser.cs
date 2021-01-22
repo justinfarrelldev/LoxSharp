@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using LoxSharp;
 using ExprNamespace;
 
-class Parser
+public class Parser
 {
     public class ParseError : System.Exception
     {
@@ -13,10 +13,24 @@ class Parser
     }
     private List<Token> tokens;
     private int current = 0;
-    Parser(List<Token> tokens)
+    public Parser(List<Token> tokens)
     {
         this.tokens = tokens;
     }
+
+
+    public Expr parse()
+    {
+        try
+        {
+            return expression();
+        }
+        catch (ParseError error)
+        {
+            return null;
+        }
+    }
+
     private Expr expression()
     {
         return equality();
@@ -149,7 +163,7 @@ class Parser
             return new Expr.Grouping(expr);
         }
 
-        return null; // Will never reach here, but all code paths must return a value.
+        throw error(peek(), "Expect expression.");
     }
 
     private Token consume(TokenType type, string message)
@@ -163,5 +177,37 @@ class Parser
     {
         LoxSharp.Program.error(token, message);
         return new ParseError();
+    }
+
+    private void synchronize()
+    {
+        advance();
+
+        while (!isAtEnd())
+        {
+            if (previous().type == TokenType.SEMICOLON) return;
+
+            switch (peek().type)
+            {
+                case TokenType.CLASS:
+                    break;
+                case TokenType.FUN:
+                    break;
+                case TokenType.VAR:
+                    break;
+                case TokenType.FOR:
+                    break;
+                case TokenType.IF:
+                    break;
+                case TokenType.WHILE:
+                    break;
+                case TokenType.PRINT:
+                    break;
+                case TokenType.RETURN:
+                    return;
+            }
+
+            advance();
+        }
     }
 }

@@ -1,6 +1,6 @@
 using LoxSharp;
 namespace ExprNamespace {
-	abstract class Expr {
+	public abstract class Expr {
 		public interface Visitor<R> {
 			abstract R visitBinaryExpr(Binary expr);
 			abstract R visitGroupingExpr(Grouping expr);

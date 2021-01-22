@@ -57,11 +57,12 @@ namespace LoxSharp
         {
             Scanner scanner = new LoxSharp.Scanner(source);
             List<Token> tokens = scanner.scanTokens();
-            // For now, we're printing the tokens 
-            foreach (Token t in tokens)
-            {
-                Console.WriteLine(t.toString());
-            }
+            Parser parser = new Parser(tokens);
+            ExprNamespace.Expr expression = parser.parse();
+
+            // Stop if there was an error.
+            if (hadError) return;
+            Console.WriteLine(new AstPrinter().print(expression));
         }
 
         public static void error(int line, string message)

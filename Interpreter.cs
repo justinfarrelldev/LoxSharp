@@ -3,6 +3,7 @@ using System.Collections.Generic;
 class Interpreter : ExprNamespace.Expr.Visitor<object>,
                     StmtNamespace.Stmt.Visitor<object>
 {
+    private Environment environment = new Environment();
     public void interpret(List<StmtNamespace.Stmt> statements)
     {
         try
@@ -37,6 +38,11 @@ class Interpreter : ExprNamespace.Expr.Visitor<object>,
         }
 
         return null; // Unreachable
+    }
+
+    public object visitVariableExpr(ExprNamespace.Expr.Variable expr)
+    {
+        return environment.get(expr.name);
     }
 
     private void checkNumberOperand(LoxSharp.Token op, object operand)
@@ -110,6 +116,25 @@ class Interpreter : ExprNamespace.Expr.Visitor<object>,
         object value = evaluate(stmt.expression);
         System.Console.WriteLine(stringify(value));
         return null;
+    }
+
+    public object visitVarStmt(StmtNamespace.Stmt.Var stmt)
+    {
+        object value = null;
+        if (stmt.initializer != null)
+        {
+            value = evaluate(stmt.initializer);
+        }
+
+        environment.define(stmt.name.lexeme, value);
+        return null;
+    }
+
+    public object visitAssignExpr(ExprNamespace.Expr.Assign expr)
+    {
+        object value = evaluate(expr.value);
+        environment.assign(expr.name, value);
+        return value;
     }
 
     public object visitBinaryExpr(ExprNamespace.Expr.Binary expr)

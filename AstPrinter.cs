@@ -1,6 +1,6 @@
 
 using ExprNamespace;
-
+/*
 class AstPrinter : Expr.Visitor<string>
 {
     public string print(Expr expr)
@@ -54,4 +54,4 @@ class AstPrinter : Expr.Visitor<string>
 
         System.Console.WriteLine(new AstPrinter().print(expression));
     }
-}
+}*/

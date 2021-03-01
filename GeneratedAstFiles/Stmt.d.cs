@@ -4,6 +4,7 @@ namespace StmtNamespace {
 		public interface Visitor<R> {
 			abstract R visitExpressionStmt(Expression stmt);
 			abstract R visitPrintStmt(Print stmt);
+			abstract R visitVarStmt(Var stmt);
 		}
 		public class Expression : Stmt {
 			public Expression(ExprNamespace.Expr expression) {
@@ -24,6 +25,19 @@ namespace StmtNamespace {
 			public ExprNamespace.Expr expression;
 			public override R accept<R>(Visitor<R> visitor) {
 				return visitor.visitPrintStmt(this);
+			}
+		}
+
+		public class Var : Stmt {
+			public Var(Token name, ExprNamespace.Expr initializer) {
+				this.name = name;
+				this.initializer = initializer;
+
+			}
+			public Token name;
+			public ExprNamespace.Expr initializer;
+			public override R accept<R>(Visitor<R> visitor) {
+				return visitor.visitVarStmt(this);
 			}
 		}
 

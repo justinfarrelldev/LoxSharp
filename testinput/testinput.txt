@@ -1,3 +1,13 @@
-print "Hello world!";
+var a = 5;
+var b = 6;
+b = 3;
 
-print 2 + 1;
+a = 2;
+
+print "Printing equation 1:"; // Comment test
+
+/* 
+  Comment test 2
+*/
+
+print a + b;

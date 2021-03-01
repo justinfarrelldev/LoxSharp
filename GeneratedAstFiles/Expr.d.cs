@@ -2,11 +2,26 @@ using LoxSharp;
 namespace ExprNamespace {
 	public abstract class Expr {
 		public interface Visitor<R> {
+			abstract R visitAssignExpr(Assign expr);
 			abstract R visitBinaryExpr(Binary expr);
 			abstract R visitGroupingExpr(Grouping expr);
 			abstract R visitLiteralExpr(Literal expr);
 			abstract R visitUnaryExpr(Unary expr);
+			abstract R visitVariableExpr(Variable expr);
 		}
+		public class Assign : Expr {
+			public Assign(Token name, Expr value) {
+				this.name = name;
+				this.value = value;
+
+			}
+			public Token name;
+			public Expr value;
+			public override R accept<R>(Visitor<R> visitor) {
+				return visitor.visitAssignExpr(this);
+			}
+		}
+
 		public class Binary : Expr {
 			public Binary(Expr left, Token op, Expr right) {
 				this.left = left;
@@ -54,6 +69,17 @@ namespace ExprNamespace {
 			public Expr right;
 			public override R accept<R>(Visitor<R> visitor) {
 				return visitor.visitUnaryExpr(this);
+			}
+		}
+
+		public class Variable : Expr {
+			public Variable(Token name) {
+				this.name = name;
+
+			}
+			public Token name;
+			public override R accept<R>(Visitor<R> visitor) {
+				return visitor.visitVariableExpr(this);
 			}
 		}
 

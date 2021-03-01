@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using System.Collections.Generic;
-using ASTGenerator;
 
 namespace LoxSharp
 {
@@ -15,14 +14,9 @@ namespace LoxSharp
             if (args.Length > 2)
             {
                 Console.WriteLine("Usage: jlox [script] [DEBUG REMOVE ME AST PATH]");
-                Environment.Exit(64);
+                System.Environment.Exit(64);
             }
-            else if (args.Length == 2)
-            {
-                ASTGenerator.GenerateAST.GenerateASTFromPath(args[1]);
-                runFile(args[0]);
-            }
-            else if (args.Length == 1)
+            else if (args.Length >= 1)
             {
                 runFile(args[0]);
             }
@@ -37,8 +31,8 @@ namespace LoxSharp
             string file = System.IO.File.ReadAllText(@path);
             run(file);
 
-            if (hadError) Environment.Exit(65);
-            if (hadRuntimeError) Environment.Exit(70);
+            if (hadError) System.Environment.Exit(65);
+            if (hadRuntimeError) System.Environment.Exit(70);
         }
 
         private static void runPrompt()

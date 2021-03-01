@@ -24,7 +24,7 @@ public class Parser
         List<StmtNamespace.Stmt> statements = new List<StmtNamespace.Stmt>();
         while (!isAtEnd())
         {
-            statements.Add(statement());
+            statements.Add(declaration());
         }
 
         return statements;
@@ -32,7 +32,22 @@ public class Parser
 
     private Expr expression()
     {
-        return equality();
+        return assignment();
+    }
+
+    private StmtNamespace.Stmt declaration()
+    {
+        try
+        {
+            if (match(new TokenType[] { TokenType.VAR })) return varDeclaration();
+
+            return statement();
+        }
+        catch (ParseError error)
+        {
+            synchronize();
+            return null;
+        }
     }
 
     private StmtNamespace.Stmt statement()
@@ -49,11 +64,46 @@ public class Parser
         return new StmtNamespace.Stmt.Print(value);
     }
 
+    private StmtNamespace.Stmt varDeclaration()
+    {
+        Token name = consume(TokenType.IDENTIFIER, "Expect variable name.");
+
+        Expr initializer = null;
+        if (match(new TokenType[] { TokenType.EQUAL }))
+        {
+            initializer = expression();
+        }
+
+        consume(TokenType.SEMICOLON, "Expect ';' after variable declaration.");
+        return new StmtNamespace.Stmt.Var(name, initializer);
+    }
+
     private StmtNamespace.Stmt expressionStatement()
     {
         Expr expr = expression();
         consume(TokenType.SEMICOLON, "Expect ';' after expression.");
         return new StmtNamespace.Stmt.Expression(expr);
+    }
+
+    private Expr assignment()
+    {
+        Expr expr = equality();
+
+        if (match(new TokenType[] { TokenType.EQUAL }))
+        {
+            Token equals = previous();
+            Expr value = assignment();
+
+            if (expr.GetType() == typeof(Expr.Variable))
+            {
+                Token name = ((Expr.Variable)expr).name;
+                return new Expr.Assign(name, value);
+            }
+
+            error(equals, "Invalid assignment target.");
+        }
+
+        return expr;
     }
 
     private Expr equality()
@@ -174,6 +224,11 @@ public class Parser
         if (match(new TokenType[] { TokenType.NUMBER, TokenType.STRING }))
         {
             return new Expr.Literal(previous().literal);
+        }
+
+        if (match(new TokenType[] { TokenType.IDENTIFIER }))
+        {
+            return new Expr.Variable(previous());
         }
 
         if (match(new TokenType[] { TokenType.LEFT_PAREN }))

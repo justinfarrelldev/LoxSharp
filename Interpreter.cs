@@ -1,17 +1,23 @@
-class Interpreter : ExprNamespace.Expr.Visitor<object>
+using System.Collections.Generic;
+
+class Interpreter : ExprNamespace.Expr.Visitor<object>,
+                    StmtNamespace.Stmt.Visitor<object>
 {
-    public void interpret(ExprNamespace.Expr expression)
+    public void interpret(List<StmtNamespace.Stmt> statements)
     {
         try
         {
-            object value = evaluate(expression);
-            System.Console.WriteLine(stringify(value));
+            foreach (StmtNamespace.Stmt statement in statements)
+            {
+                execute(statement);
+            }
         }
         catch (Errors.RuntimeError error)
         {
-
+            LoxSharp.Program.runtimeError(error);
         }
     }
+
     public object visitLiteralExpr(ExprNamespace.Expr.Literal expr)
     {
         return expr.value;
@@ -86,6 +92,24 @@ class Interpreter : ExprNamespace.Expr.Visitor<object>
     private object evaluate(ExprNamespace.Expr expr)
     {
         return expr.accept(this);
+    }
+
+    private void execute(StmtNamespace.Stmt stmt)
+    {
+        stmt.accept(this);
+    }
+
+    public object visitExpressionStmt(StmtNamespace.Stmt.Expression stmt)
+    {
+        evaluate(stmt.expression);
+        return null;
+    }
+
+    public object visitPrintStmt(StmtNamespace.Stmt.Print stmt)
+    {
+        object value = evaluate(stmt.expression);
+        System.Console.WriteLine(stringify(value));
+        return null;
     }
 
     public object visitBinaryExpr(ExprNamespace.Expr.Binary expr)

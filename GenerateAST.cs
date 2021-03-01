@@ -15,6 +15,11 @@ namespace ASTGenerator
                 "Literal  : object value",
                 "Unary    : Token op, Expr right"
             });
+
+            defineAst(path, "Stmt", new List<string>() {
+                "Expression : ExprNamespace.Expr expression",
+                "Print      : ExprNamespace.Expr expression"
+            });
         }
 
         private static void defineAst(string outputDir, string baseName, List<string> types)

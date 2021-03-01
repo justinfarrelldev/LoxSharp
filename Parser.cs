@@ -19,21 +19,41 @@ public class Parser
     }
 
 
-    public Expr parse()
+    public List<StmtNamespace.Stmt> parse()
     {
-        try
+        List<StmtNamespace.Stmt> statements = new List<StmtNamespace.Stmt>();
+        while (!isAtEnd())
         {
-            return expression();
+            statements.Add(statement());
         }
-        catch (ParseError error)
-        {
-            return null;
-        }
+
+        return statements;
     }
 
     private Expr expression()
     {
         return equality();
+    }
+
+    private StmtNamespace.Stmt statement()
+    {
+        if (match(new TokenType[] { TokenType.PRINT })) return printStatement();
+
+        return expressionStatement();
+    }
+
+    private StmtNamespace.Stmt printStatement()
+    {
+        Expr value = expression();
+        consume(TokenType.SEMICOLON, "Expect ';' after value.");
+        return new StmtNamespace.Stmt.Print(value);
+    }
+
+    private StmtNamespace.Stmt expressionStatement()
+    {
+        Expr expr = expression();
+        consume(TokenType.SEMICOLON, "Expect ';' after expression.");
+        return new StmtNamespace.Stmt.Expression(expr);
     }
 
     private Expr equality()

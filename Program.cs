@@ -25,7 +25,6 @@ namespace LoxSharp
             else if (args.Length == 1)
             {
                 runFile(args[0]);
-                AstPrinter.Test();
             }
             else
             {
@@ -61,11 +60,11 @@ namespace LoxSharp
             Scanner scanner = new LoxSharp.Scanner(source);
             List<Token> tokens = scanner.scanTokens();
             Parser parser = new Parser(tokens);
-            ExprNamespace.Expr expression = parser.parse();
+            List<StmtNamespace.Stmt> statements = parser.parse();
 
             // Stop if there was an error.
             if (hadError) return;
-            interpreter.interpret(expression);
+            interpreter.interpret(statements);
         }
 
         public static void error(int line, string message)

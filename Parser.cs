@@ -53,6 +53,7 @@ public class Parser
     private StmtNamespace.Stmt statement()
     {
         if (match(new TokenType[] { TokenType.PRINT })) return printStatement();
+        if (match(new TokenType[] { TokenType.LEFT_BRACE })) return new StmtNamespace.Stmt.Block(block());
 
         return expressionStatement();
     }
@@ -83,6 +84,19 @@ public class Parser
         Expr expr = expression();
         consume(TokenType.SEMICOLON, "Expect ';' after expression.");
         return new StmtNamespace.Stmt.Expression(expr);
+    }
+
+    private List<StmtNamespace.Stmt> block()
+    {
+        List<StmtNamespace.Stmt> statements = new List<StmtNamespace.Stmt>();
+
+        while (!check(TokenType.RIGHT_BRACE) && !isAtEnd())
+        {
+            statements.Add(declaration());
+        }
+
+        consume(TokenType.RIGHT_BRACE, "Expect '}' after block.");
+        return statements;
     }
 
     private Expr assignment()

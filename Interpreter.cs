@@ -105,6 +105,30 @@ class Interpreter : ExprNamespace.Expr.Visitor<object>,
         stmt.accept(this);
     }
 
+    private void executeBlock(List<StmtNamespace.Stmt> statements, Environment environment)
+    {
+        Environment previous = this.environment;
+        try
+        {
+            this.environment = environment;
+
+            foreach (StmtNamespace.Stmt statement in statements)
+            {
+                execute(statement);
+            }
+        }
+        finally
+        {
+            this.environment = previous;
+        }
+    }
+
+    public object visitBlockStmt(StmtNamespace.Stmt.Block stmt)
+    {
+        executeBlock(stmt.statements, new Environment(environment));
+        return null;
+    }
+
     public object visitExpressionStmt(StmtNamespace.Stmt.Expression stmt)
     {
         evaluate(stmt.expression);

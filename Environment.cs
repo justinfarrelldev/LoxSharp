@@ -2,6 +2,16 @@ using System.Collections.Generic;
 
 public class Environment
 {
+    private Environment enclosing;
+    public Environment()
+    {
+        enclosing = null;
+    }
+
+    public Environment(Environment enclosing)
+    {
+        this.enclosing = enclosing;
+    }
     private Dictionary<string, object> values = new Dictionary<string, object>();
     public void define(string name, object value)
     {
@@ -15,6 +25,8 @@ public class Environment
             return values[name.lexeme];
         }
 
+        if (enclosing != null) return enclosing.get(name);
+
         throw new Errors.RuntimeError(name, $"Undefined variable '{name.lexeme}'.");
     }
 
@@ -23,6 +35,12 @@ public class Environment
         if (values.ContainsKey(name.lexeme))
         {
             values[name.lexeme] = value;
+            return;
+        }
+
+        if (enclosing != null)
+        {
+            enclosing.assign(name, value);
             return;
         }
 
